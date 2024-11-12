@@ -1,30 +1,55 @@
 import pandas as pd
-from sklearn.preprocessing import StandardScaler
-from sklearn.cluster import AgglomerativeClustering
-import scipy.cluster.hierarchy as sch
+from mlxtend.preprocessing import TransactionEncoder
+from mlxtend.frequent_patterns import apriori, association_rules
+groceries = [
+    ['milk', 'bread', 'eggs'],
+    ['milk', 'bread'],
+    ['milk', 'butter', 'bread'],
+    ['bread', 'eggs'],
+    ['butter', 'eggs']
+]
+
+te = TransactionEncoder()
+te_ary = te.fit(groceries).transform(groceries)
+df = pd.DataFrame(te_ary, columns=te.columns_)
+
+print("Binary Matrix of Transactions:")
+print(df)
+
+
+frequent_itemsets = apriori(df, min_support=0.25, use_colnames=True)
+
+print("\nFrequent Itemsets:")
+print(frequent_itemsets)
+
+rules = association_rules(frequent_itemsets, metric="confidence", min_threshold=0.5)
+
+print("\nAssociation Rules:")
+print(rules[['antecedents', 'consequents', 'support', 'confidence']])
+
+
+
+import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
+from sklearn.preprocessing import LabelEncoder
 
-data = pd.read_csv('wholesale.csv')
-
-X = data.drop(['Region', 'Channel'], axis=1)
-
-scaler = StandardScaler()
-X_scaled = scaler.fit_transform(X)
-
-agg_clustering = AgglomerativeClustering(n_clusters=3, linkage='ward')
-
-clusters = agg_clustering.fit_predict(X_scaled)
-
-data['Cluster'] = clusters
+data=pd.read_csv("iris.csv")
+data=data.dropna(axis=0,how="any")
 print(data)
 
-dendrogram = sch.dendrogram(sch.linkage(X_scaled, method='ward'))
-plt.title('Dendrogram')
-plt.xlabel('Customers')
-plt.ylabel('Euclidean Distances')
+x=data["SepalLengthCm"]
+y=data["SepalWidthCm"]
+z=data["Species"]
+le=LabelEncoder()
+z1=le.fit_transform(z)
+print(z)
+print(z1)
+
+
+
+plt.scatter(x,y,c=z1)
+plt.title("IRIS CSV")
+plt.xlabel("SepalLengthCm")
+plt.ylabel("SepalWidthCm")
 plt.show()
-
-print(data['Cluster'].value_counts())
-
-cluster_summary = data.groupby('Cluster').mean()
-print(cluster_summary)
