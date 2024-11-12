@@ -1,0 +1,28 @@
+import pandas as pd
+data = pd.read_csv("crash.csv")
+x = data[['age', 'speed']]
+y = data['survived']
+print(x)
+print(y)
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=42)
+from sklearn.linear_model import LogisticRegression
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+
+y_pred = model.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred)
+print(f'Accuracy: {accuracy}')
+
+conf_matrix = confusion_matrix(y_test, y_pred)
+print('Confusion Matrix:')
+print(conf_matrix)
+class_report = classification_report(y_test, y_pred)
+print('Classification Report:')
+print(class_report)
+coefficients = model.coef_
+intercept = model.intercept_
+print(f'Coefficients: {coefficients}')
+print(f'Intercept: {intercept}')
