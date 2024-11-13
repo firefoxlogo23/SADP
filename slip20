@@ -1,0 +1,66 @@
+
+import pandas as pd
+data = pd.read_csv('boston_houses.csv')
+data = data[['rm', 'price']]
+
+X = data[['rm']]
+y = data['price']
+
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.7)
+
+from sklearn.linear_model import Ridge
+ridge_model = Ridge(alpha=1.0)  
+ridge_model.fit(X_train, y_train)
+price_5_rooms_ridge = ridge_model.predict([[5]])
+print(" ridge Price for a house with 5 rooms:=>",price_5_rooms_ridge)
+
+from sklearn.linear_model import Lasso
+lasso_model = Lasso(alpha=0.1)  
+lasso_model.fit(X_train, y_train)
+price_5_rooms_lasso = lasso_model.predict([[5]])
+print("lasso Price for a house with 5 rooms: =>",price_5_rooms_lasso)
+
+from sklearn.linear_model import ElasticNet
+elasticnet_model = ElasticNet(alpha=1.0, l1_ratio=0.5)  
+elasticnet_model.fit(X_train, y_train)
+price_5_rooms_elasticnet = elasticnet_model.predict([[5]])
+print("ElasticNet Regression - Price for a house with 5 rooms: =>",price_5_rooms_elasticnet)
+
+
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import classification_report
+
+data=pd.read_csv("features.csv")
+
+x=data[["a1","a2","a3","a4"]]
+y=data['label']
+
+xtrain,xtest,ytrain,ytest=train_test_split(x,y,test_size=0.2,random_state=42)
+
+dc=DecisionTreeClassifier(random_state=42)
+
+dc.fit(xtrain,ytrain)
+
+ypred=dc.predict(xtest)
+
+cr=classification_report(ytest,ypred)
+print(cr)
+
+print(dc.predict([[4.6765,-3.3895,3.4896,1.4771]]))
+print(dc.predict([[0.0040545,0.62905,-0.64121,0.75817]]))
+
+
+
+
+
+
+
+
+
+
+
